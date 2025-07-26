@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CodeVerification from "../components/CodeVerification";
 import SignUp from "../components/SignUp";
 import Role from "../components/Role";
@@ -11,6 +12,13 @@ export default function CreateAccount() {
   const handleSignUp = () => setHasSignedUp(true);
   const handleVerification = () => setHasVerified(true);
   const handleRoleDone = () => setRoleStepDone(true);
+  const navigate = useNavigate();
+  if (roleStepDone) {
+    //set a timer of 5 seconds before navigating to the home page
+    setTimeout(() => {
+      navigate("/home");
+    }, 5000);
+  }
 
   return (
     <div className="bg-gradient-to-br from-blue-100 to-blue-300 min-h-screen flex items-center justify-center p-4 font-sans">

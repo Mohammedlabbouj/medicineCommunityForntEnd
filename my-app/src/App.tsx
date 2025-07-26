@@ -1,8 +1,8 @@
 import LandingPage from "./pages/LandingPage";
-import SignUp from "./components/SignUp";
 import CreateAccount from "./pages/CreateAccount";
-import CodeVerification from "./components/CodeVerification";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+
 import "./App.css";
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/createAcount" element={<CreateAccount />} />
-        <Route path="/codeVerification" element={<CodeVerification />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );

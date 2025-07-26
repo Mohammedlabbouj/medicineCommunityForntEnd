@@ -16,8 +16,4 @@ export interface CodeVerificationProps {
 }
 export interface RoleProps {
   onContinue: () => void;
-  role: string;
-  setRole: (role: string) => void;
-  specialization: string;
-  setSpecialization: (specialization: string) => void;
 }
