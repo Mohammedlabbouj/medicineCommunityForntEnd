@@ -15,7 +15,7 @@ export default function NaveBar() {
             alt="Logo"
             className="mr-2 rounded-full"
           />
-          <span className="hidden sm:block">medicineCommunity</span>
+          <span className="hidden sm:block">medicineCommunity </span>
         </a>
 
         <div className="relative w-48 sm:w-64 md:w-80">
