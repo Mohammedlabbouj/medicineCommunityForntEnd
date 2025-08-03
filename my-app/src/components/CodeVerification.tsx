@@ -38,14 +38,30 @@ export default function CodeVerification({
     setCode(newCode);
   };
 
-  const handelSubmit = () => {
+  const handelSubmit = async () => {
     const verificationCode = code.join("");
     console.log("Verification Code:", verificationCode);
-    if (verificationCode.length === 6) {
-      handleVerification();
-    } else {
-      alert("Please enter a valid 6-digit code.");
+    const email = localStorage.getItem("email");
+
+    const  verification = await fetch("http://localhost:3000/api/v1/auth/verify-otp", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email : email, otp: verificationCode }),
+    });
+    if (!verification.ok) {
+      const errorData = await verification.json();
+      console.error("Verification failed:", errorData);
+      return;
     }
+    const response = await verification.json();
+    console.log("Verification successful:", response);
+    handleVerification();
+    alert("Verification successful!...");
+
+
   };
 
   return (

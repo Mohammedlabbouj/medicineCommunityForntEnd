@@ -23,7 +23,8 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handlesignUp();
+    localStorage.setItem("email", formData.email);
+    
     const singupData = await fetch ("http://localhost:3000/api/v1/auth/signup", {
       method : "POST",
       credentials : "include",
@@ -40,7 +41,7 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
     const response = await singupData.json();
     console.log("Sign up successful:", response);
     handlesignUp();
-     
+
   };
 
   return (
