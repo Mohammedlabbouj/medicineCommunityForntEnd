@@ -1,8 +1,9 @@
 import LandingPage from "./pages/LandingPage";
 import CreateAccount from "./pages/CreateAccount";
 import PageLayout from "./components/Layout/PageLayout";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
+import CreatePost from "./pages/CreatePost";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 
 function AppContent() {
@@ -25,6 +26,7 @@ function AppContent() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/createAcount" element={<CreateAccount />} />
       <Route path="/home" element={renderWithLayout(Home)} />
+      <Route path="/createPost" element={renderWithLayout(CreatePost)} />
     </Routes>
   );
 }

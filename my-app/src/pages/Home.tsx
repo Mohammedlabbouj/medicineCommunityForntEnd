@@ -1,12 +1,19 @@
+import PostFilter from "../components/PostFilter";
+import Post from "../components/Post";
+import { getPosts } from "../api/PostApi";
+import { useEffect, useState } from "react";
+import type { PostType } from "../types/postType";
+
 export default function Home() {
+  const [examplePost, setExamplePost] = useState<PostType >();
+  useEffect(() => {
+    const post = getPosts();
+    setExamplePost(post);
+  }, []);
   return (
-    <div className="container mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">
-        Welcome to the Home Page
-      </h1>
-      <p className="text-gray-600">
-        This is where you can find the latest updates and features.
-      </p>
-    </div>
+    <main className="flex-1 p-4">
+      <PostFilter />
+      {examplePost && <Post post={examplePost} />}
+    </main>
   );
 }

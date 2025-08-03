@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 // import { createIcons } from "lucide";
 import { Edit, MessageCircle, Bell, Search } from "lucide-react";
 
@@ -37,10 +38,10 @@ export default function NaveBar() {
         <button className="p-2 rounded-full hover:bg-gray-100">
           <MessageCircle className="w-5 h-5 text-gray-600" />
         </button>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-blue-700">
+        <Link to={"/createPost"} className="bg-blue-600 text-white px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-blue-700">
           <Edit className="w-5 h-5" />
           <span className="hidden sm:block">Create</span>
-        </button>
+        </Link>
         <button className="p-2 rounded-full hover:bg-gray-100">
           <img
             src="https://placehold.co/32x32/d1d5db/000000?text=U"

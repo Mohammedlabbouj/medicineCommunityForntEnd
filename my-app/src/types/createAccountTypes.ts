@@ -14,6 +14,10 @@ export interface SingUpProps {
 export interface CodeVerificationProps {
   handleVerification: () => void;
 }
-export interface RoleProps {
-  onContinue: () => void;
-}
+export type RoleProps = {
+  onContinue: (data?: {
+    role: "doctor";
+    specialization: string;
+    jobDate: string;
+  }) => void;
+};

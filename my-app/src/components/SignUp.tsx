@@ -21,10 +21,26 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     handlesignUp();
-    console.log("Form submitted:", formData);
+    const singupData = await fetch ("http://localhost:3000/api/v1/auth/signup", {
+      method : "POST",
+      credentials : "include",
+      headers : {
+        "Content-Type" : "application/json"
+      },
+      body : JSON.stringify(formData)
+    });
+    if (!singupData.ok) {
+      const errorData = await singupData.json();
+      console.error("Sign up failed:", errorData);
+      return;
+    }
+    const response = await singupData.json();
+    console.log("Sign up successful:", response);
+    handlesignUp();
+     
   };
 
   return (
