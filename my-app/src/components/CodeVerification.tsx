@@ -6,6 +6,7 @@ export default function CodeVerification({
 }: CodeVerificationProps) {
   const [code, setCode] = React.useState(Array(6).fill(""));
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
 
   const handleCodeChange = (index: number, value: string) => {
     const newCode = [...code];
@@ -18,7 +19,10 @@ export default function CodeVerification({
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     // Move to previous input on backspace if current input is empty
     if (e.key === "Backspace" && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -29,7 +33,7 @@ export default function CodeVerification({
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").slice(0, 6);
     const newCode = [...code];
-    
+
     for (let i = 0; i < pastedData.length; i++) {
       if (/^\d$/.test(pastedData[i])) {
         newCode[i] = pastedData[i];
@@ -41,27 +45,34 @@ export default function CodeVerification({
   const handelSubmit = async () => {
     const verificationCode = code.join("");
     console.log("Verification Code:", verificationCode);
+    if (verificationCode.length !== 6) {
+      setError("Please enter a valid 6-digit code.");
+      return;
+    }
     const email = localStorage.getItem("email");
 
-    const  verification = await fetch("http://localhost:3000/api/v1/auth/verify-otp", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email : email, otp: verificationCode }),
-    });
+    const verification = await fetch(
+      "http://localhost:3000/api/v1/auth/verify-otp",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, otp: verificationCode }),
+      }
+    );
     if (!verification.ok) {
       const errorData = await verification.json();
       console.error("Verification failed:", errorData);
+      setError(errorData.error);
+      setCode(Array(6).fill(""));
       return;
     }
     const response = await verification.json();
     console.log("Verification successful:", response);
     handleVerification();
     alert("Verification successful!...");
-
-
   };
 
   return (
@@ -73,24 +84,29 @@ export default function CodeVerification({
         Please enter the 6-digit code sent to your email address.
       </p>
       <div className="flex justify-center space-x-4 mb-12">
-        {Array(6).fill(null).map((_, idx) => (
-          <input
-            ref={(el) => (inputRefs.current[idx] = el)}
-            key={idx}
-            type="text"
-            maxLength={1}
-            value={code[idx]}
-            onChange={(e) => handleCodeChange(idx, e.target.value.replace(/\D/, ''))}
-            onKeyDown={(e) => handleKeyDown(idx, e)}
-            onPaste={handlePaste}
-            className="w-16 h-16 text-center text-3xl font-bold tracking-widest
+        {Array(6)
+          .fill(null)
+          .map((_, idx) => (
+            <input
+              ref={(el) => (inputRefs.current[idx] = el)}
+              key={idx}
+              type="text"
+              maxLength={1}
+              value={code[idx]}
+              onChange={(e) =>
+                handleCodeChange(idx, e.target.value.replace(/\D/, ""))
+              }
+              onKeyDown={(e) => handleKeyDown(idx, e)}
+              onPaste={handlePaste}
+              className="w-16 h-16 text-center text-3xl font-bold tracking-widest
               border border-gray-300 rounded-lg bg-gray-100
               focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-300
               transition-all duration-150 shadow-sm"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          />
-        ))}
+              style={{ fontFamily: "Inter, sans-serif" }}
+            />
+          ))}
       </div>
+      {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
       <button
         onClick={handelSubmit}
         type="button"

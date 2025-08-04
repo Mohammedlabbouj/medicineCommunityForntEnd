@@ -7,7 +7,7 @@ export default function LandingPage() {
     <div className="relative w-full max-w-7xl aspect-[16/9] rounded-lg shadow-xl overflow-hidden flex flex-col">
         <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#ADD8E6] to-transparent flex items-center justify-between px-6 z-20">
             <h1 className="text-black text-2xl font-bold">medicineCommunity</h1>
-            <Link to={""}  >
+            <Link to={"/login"}  >
             <Button />
             </Link>
         </div>

@@ -11,6 +11,9 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
     gender: "",
     dob: "",
   });
+  const [error, setError] = useState<string | null>(null);
+  const [errorPassword, setErrorPassword] = useState<string | null>(null);
+  const [errorEmail, setErrorEmail] = useState<string | null>(null);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -23,30 +26,54 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null); // clear previous errors
     localStorage.setItem("email", formData.email);
-    
-    const singupData = await fetch ("http://localhost:3000/api/v1/auth/signup", {
-      method : "POST",
-      credentials : "include",
-      headers : {
-        "Content-Type" : "application/json"
-      },
-      body : JSON.stringify(formData)
-    });
-    if (!singupData.ok) {
-      const errorData = await singupData.json();
-      console.error("Sign up failed:", errorData);
-      return;
-    }
-    const response = await singupData.json();
-    console.log("Sign up successful:", response);
-    handlesignUp();
 
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/auth/signup", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json(); // always parse the JSON body
+
+      if (!response.ok) {
+        console.error("Sign up failed:", data);
+        if (data.error === "the password should be the same") {
+          setErrorPassword(data.error);
+          return;
+        } else if (
+          data.error ===
+          `Duplicate entry '${formData.email}' for key 'users.email'`
+        ) {
+          setErrorEmail("Email already exists. Please use a different email.");
+          return;
+        }
+        setError("Something went wrong. Please try again later.");
+        return;
+      }
+
+      console.log("Sign up successful:", data);
+      handlesignUp();
+    } catch (err) {
+      console.error("Network or unexpected error:", err);
+      setError("Something went wrong. Please try again later.");
+    }
   };
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div>
+          {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Create your account
+          </h2>
+        </div>
         <form onSubmit={handleSubmit} method="POST" action="#">
           <div>
             <label
@@ -107,7 +134,11 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
                 id="email"
               />
             </div>
+            {errorEmail && (
+              <div className="text-red-500 text-sm mt-2">{errorEmail}</div>
+            )}
           </div>
+          <div className="mt-6"></div>
           <div className="mt-6">
             <label
               className="block text-sm font-medium text-gray-700"
@@ -147,7 +178,11 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
                 id="confirm-password"
               />
             </div>
+            {errorPassword && (
+              <div className="text-red-500 text-sm mt-2">{errorPassword}</div>
+            )}
           </div>
+          <div className="mt-6"></div>
           <div className="mt-6">
             <label
               className="block text-sm font-medium text-gray-700"
