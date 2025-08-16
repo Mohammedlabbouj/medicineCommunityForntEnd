@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { setEmail } from "../features/email/emailSlice";
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -7,8 +10,9 @@ const Login = () => {
     rememberMe: false,
   });
   const navigate = useNavigate();
-
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const email = useAppSelector((state) => state.email.email);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -40,6 +44,7 @@ const Login = () => {
       }
 
       console.log("Login successful:", data);
+      console.log("Email from state:", email);
       navigate("/home");
       // Redirect, set auth, etc.
     } catch (err) {
@@ -106,6 +111,7 @@ const Login = () => {
           <button
             type="submit"
             className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
+            onClick={() => dispatch(setEmail(formData.email))}
           >
             Login
           </button>

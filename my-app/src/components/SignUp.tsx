@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { SignUpForm } from "../types/createAccountTypes";
 import type { SingUpProps } from "../types/createAccountTypes";
+import { useAppDispatch } from "../app/hooks";
 const SignUp = ({ handlesignUp }: SingUpProps) => {
   const [formData, setFormData] = useState<SignUpForm>({
     firstName: "",
@@ -14,6 +15,7 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
   const [error, setError] = useState<string | null>(null);
   const [errorPassword, setErrorPassword] = useState<string | null>(null);
   const [errorEmail, setErrorEmail] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -58,6 +60,7 @@ const SignUp = ({ handlesignUp }: SingUpProps) => {
       }
 
       console.log("Sign up successful:", data);
+      dispatch({ type: "email/setEmail", payload: formData.email });
       handlesignUp();
     } catch (err) {
       console.error("Network or unexpected error:", err);

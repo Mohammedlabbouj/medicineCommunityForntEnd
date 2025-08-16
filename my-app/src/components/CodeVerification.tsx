@@ -1,13 +1,13 @@
 import React from "react";
 import type { CodeVerificationProps } from "../types/createAccountTypes";
-
+import { useAppSelector } from "../app/hooks";
 export default function CodeVerification({
   handleVerification,
 }: CodeVerificationProps) {
   const [code, setCode] = React.useState(Array(6).fill(""));
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
   const [error, setError] = React.useState<string | null>(null);
-
+  const email = useAppSelector((state) => state.email.email);
   const handleCodeChange = (index: number, value: string) => {
     const newCode = [...code];
     newCode[index] = value;
@@ -49,7 +49,6 @@ export default function CodeVerification({
       setError("Please enter a valid 6-digit code.");
       return;
     }
-    const email = localStorage.getItem("email");
 
     const verification = await fetch(
       "http://localhost:3000/api/v1/auth/verify-otp",
